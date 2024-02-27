@@ -58,6 +58,11 @@
     - "{{ systemd_dir }}/k3s-node.service.d"
   when: proxy_env is defined
 
+- name: Remove ~/.kube/
+  file:
+    name: "~{{ ansible_user }}/.kube"
+    state: absent
+
 - name: Reload daemon_reload
   systemd:
     daemon_reload: true
@@ -94,3 +99,50 @@
     path: /etc/rc.local
     state: absent
   when: proxmox_lxc_configure and rcfile.stat.exists and ((rcslurp.content | b64decode).splitlines() | length) <= 1
+
+- name: Remove network interface {{ item }}
+  ignore_errors: true
+  command:
+    argv:
+      - /sbin/ip
+      - link
+      - delete
+      - "{{ item }}"
+  with_items:
+    - flannel.1
+    - cni0
+    - cilium_net
+    - cilium_host
+    - cilium_vxlan
+
+- name: "Cilium: {{ item.name }}"
+  ignore_errors: true
+  command:
+    argv:
+      - /bin/bash
+      - -c
+      - "{{ item.cmd }}"
+  with_items:
+    - name: Delete LXC and veth interfaces
+      cmd: >-
+        ip link show 2>/dev/null 
+        | grep -e '^[0-9]*: \(lxc\|veth\)' 
+        | awk '{print $2}' 
+        | sed -E 's/^(.+)@.+$/\1/g' 
+        | xargs -i ip link delete {}
+    - name: Remove cilium from iptables
+      cmd: >-
+        iptables-save 
+        | grep -iv cilium
+        | grep -iv flannel
+        | grep -iv CNI-
+        | grep -iv KUBE-
+        | iptables-restore
+    - name: Remove cilium from iptables6
+      cmd: >-
+        ip6tables-save 
+        | grep -iv cilium
+        | grep -iv flannel
+        | grep -iv CNI-
+        | grep -iv KUBE-
+        | ip6tables-restore
