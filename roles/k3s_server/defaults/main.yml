@@ -4,6 +4,18 @@
 # will determine the right interface automatically at runtime.
 kube_vip_iface: null
 
+# Log Level to be used: 1 (lowest) to 5 (most verbose). 4 is default.
+# Reference: https://kube-vip.io/docs/installation/flags/#environment-variables under Troubleshooting
+kube_vip_loglevel: 4
+
+# Forward Method to use for kube-vip
+# Reference: https://kube-vip.io/docs/installation/flags/#environment-variables under VIP Config/lb_fwdmethod
+kube_vip_fwdmethod: local
+
+# Use Kube-VIP to elect leaders per service.
+# Reference: https://kube-vip.io/docs/installation/flags/#environment-variables under VIP Config/svc_election
+kube_vip_svc_election: true
+
 # Name of the master group
 group_name_master: master
 
