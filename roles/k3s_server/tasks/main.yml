@@ -49,7 +49,7 @@
   block:
     - name: Verify that all nodes actually joined (check k3s-init.service if this fails)
       command:
-        cmd: k3s kubectl get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
+        cmd: k3s kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml get nodes -l "node-role.kubernetes.io/master=true" -o=jsonpath="{.items[*].metadata.name}"
       register: nodes
       until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups[group_name_master | default('master')] | length)  # yamllint disable-line rule:line-length
       retries: "{{ retry_count | default(20) }}"
