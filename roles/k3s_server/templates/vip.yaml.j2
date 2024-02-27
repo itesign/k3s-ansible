@@ -52,9 +52,17 @@ spec:
           value: "10"
         - name: vip_retryperiod
           value: "2"
+        - name: enable_node_labeling
+          value: "true"
+        - name: svc_election
+          value: "true"
+        - name: EGRESS_CLEAN
+          value: "true"
         - name: address
           value: {{ apiserver_endpoint }}
-        image: ghcr.io/kube-vip/kube-vip:{{ kube_vip_tag_version }}
+        - name: lb_fwdmethod
+          value: "local"
+        image: "ghcr.io/kube-vip/kube-vip:{{ kube_vip_tag_version }}"
         imagePullPolicy: Always
         name: kube-vip
         resources: {}
