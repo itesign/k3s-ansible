@@ -7,6 +7,8 @@ kube_vip_iface: null
 # Log Level to be used: 1 (lowest) to 5 (most verbose). 4 is default.
 # Reference: https://kube-vip.io/docs/installation/flags/#environment-variables under Troubleshooting
 kube_vip_loglevel: 4
+# Same, but for cloud provider
+kube_vip_cloud_provider_loglevel: 4
 
 # Forward Method to use for kube-vip
 # Reference: https://kube-vip.io/docs/installation/flags/#environment-variables under VIP Config/lb_fwdmethod
