@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -54,10 +55,10 @@ spec:
           value: "2"
         - name: enable_node_labeling
           value: "true"
-        {%- if kube_vip_lb_ip_range is defined %}
+{% if kube_vip_lb_ip_range is defined %}
         - name: svc_election
           value: "{{ kube_vip_svc_election }}"
-        {%- endif %}
+{% endif %}
         - name: EGRESS_CLEAN
           value: "true"
         - name: address
